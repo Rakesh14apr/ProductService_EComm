@@ -14,5 +14,5 @@ public class ProductResponseDto {
     private String description;
     private String image;
     //@JsonProperty("category")
-    private Category category;
+    private String category;
 }

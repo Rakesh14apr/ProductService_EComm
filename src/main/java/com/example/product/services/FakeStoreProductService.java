@@ -2,6 +2,7 @@ package com.example.product.services;
 
 import com.example.product.dtos.ProductRequestDto;
 import com.example.product.dtos.ProductResponseDto;
+import com.example.product.exceptions.ProductDoesNotExistException;
 import com.example.product.models.Category;
 import com.example.product.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +67,15 @@ public class FakeStoreProductService implements IProductService{
     }
 
     @Override
+    public Product updateProduct(Long id, Product product) throws ProductDoesNotExistException {
+        return null;
+    }
+
+
+
+   /* @Override
     public Product updateProduct(Long id, ProductRequestDto productRequestDto) {
-        /*
+        *//*
         //This is not returning the object that it as modified
         restTemplate.put("https://fakestoreapi.com/products/"+id,ProductRequestDto.class);
 
@@ -77,7 +85,7 @@ public class FakeStoreProductService implements IProductService{
 //        if we use PUT method to update we have to make two network calls
 //        to update the product and return updated product
 
-         */
+         *//*
         RequestCallback requestCallback=restTemplate.httpEntityCallback(productRequestDto, ProductResponseDto.class);
         HttpMessageConverterExtractor<ProductResponseDto> responseExtractor=
                 new HttpMessageConverterExtractor<>(ProductResponseDto.class,
@@ -87,7 +95,7 @@ public class FakeStoreProductService implements IProductService{
         return getProductFromProductResponseDto(responseDto);
 
         //restTemplate.getForObject("https://fakestoreapi.com/products/"+id, ProductRequestDto.class);
-    }
+    }*/
 
     @Override
     public Product deleteProduct(Long Id) {

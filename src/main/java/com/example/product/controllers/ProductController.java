@@ -2,6 +2,8 @@ package com.example.product.controllers;
 
 import com.example.product.dtos.ProductRequestDto;
 import com.example.product.exceptions.InvalidProductException;
+import com.example.product.exceptions.ProductDoesNotExistException;
+import com.example.product.models.Category;
 import com.example.product.models.Product;
 import com.example.product.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,23 +39,39 @@ public class ProductController {
         return productService.getSingleProduct(id);
     }
 
+
     //add new product to fakestore
     //use post method, to add a product the method should take body as input
     //https://fakestoreapi.com/products
     @PostMapping("/products")
     public Product addProduct(@RequestBody ProductRequestDto productRequestDto){
+        Product product=new Product();
+        product.setName(productRequestDto.getTitle());
+        product.setPrice(productRequestDto.getPrice());
+        product.setDescription(productRequestDto.getDescription());
+        product.setImage(productRequestDto.getImage());
+        product.setCategory(new Category());
+        product.getCategory().setName(productRequestDto.getCategory());
 
-        return new Product();
+        Product savedProduct=productService.addProduct(product);
+        return savedProduct;
     }
-
-    @GetMapping()
 
     //update existing product in fakestore
     //to update product in fakestore method takes product id and new body of the product
     @PutMapping("/products/{id}")
-    public Product updateProduct(@PathVariable("id") Long id,@RequestBody ProductRequestDto productRequestDto){
+    public Product updateProduct(@PathVariable("id") Long id,@RequestBody ProductRequestDto productRequestDto) throws ProductDoesNotExistException {
+        Product product = new Product();
+        product.setId(id);
+        product.setName(productRequestDto.getTitle());
+        product.setPrice(productRequestDto.getPrice());
+        product.setDescription(productRequestDto.getDescription());
+        product.setImage(productRequestDto.getImage());
+        product.setCategory(new Category());
+        product.getCategory().setName(productRequestDto.getCategory());
 
-        return productService.updateProduct(id,productRequestDto);
+        Product updatedProduct = productService.updateProduct(id,product);
+        return updatedProduct;
     }
 
     //delete product from fakestore

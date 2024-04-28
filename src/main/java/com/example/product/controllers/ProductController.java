@@ -61,7 +61,7 @@ public class ProductController {
     //to update product in fakestore method takes product id and new body of the product
     @PutMapping("/products/{id}")
     public Product updateProduct(@PathVariable("id") Long id,@RequestBody ProductRequestDto productRequestDto) throws ProductDoesNotExistException {
-        Product product = new Product();
+         Product product = new Product();
         product.setId(id);
         product.setName(productRequestDto.getTitle());
         product.setPrice(productRequestDto.getPrice());

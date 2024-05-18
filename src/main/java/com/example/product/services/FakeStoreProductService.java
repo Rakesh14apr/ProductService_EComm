@@ -8,6 +8,7 @@ import com.example.product.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -25,6 +26,9 @@ public class FakeStoreProductService implements IProductService{
     //to interact with fakestoreAPI.com we need web service so we are considering Rest Template
     @Autowired
     RestTemplate restTemplate;
+
+    @Autowired
+    RedisTemplate<String,Long> redisTemplate;
 
     public Product getProductFromProductResponseDto(ProductResponseDto responseDto){
         Product product=new Product();
@@ -48,10 +52,17 @@ public class FakeStoreProductService implements IProductService{
         // POC for fakestore: 'https://fakestoreapi.com/products/1'
         // Now we need to interact with other service from our application
         //for this we have multipe options(RestTemplate, Web Service.. )
-
+        if(redisTemplate.opsForHash().hasKey("PRODUCTS",id)) {
+            return (Product)redisTemplate.opsForHash().get("PRODUCTS",id);
+        }
         ProductResponseDto response = restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
-                ProductResponseDto.class);
-        return getProductFromProductResponseDto(response);
+                    ProductResponseDto.class);
+
+        //Implementing Caching Technique
+        Product product=getProductFromProductResponseDto(response);
+
+        redisTemplate.opsForHash().put("PRODUCTS",id,product);
+        return product;
     }
 
     @Override
